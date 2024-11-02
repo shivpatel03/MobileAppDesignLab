@@ -25,6 +25,14 @@ public class MainActivity extends AppCompatActivity {
     private DatabaseHelper databaseHelper;
 
     @Override
+    protected void onResume() {
+        super.onResume();
+        // Refresh the notes list when returning to MainActivity
+        List<Note> notes = getAllNotes();
+        noteAdapter.updateNotes(notes);
+    }
+
+    @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
@@ -39,9 +47,10 @@ public class MainActivity extends AppCompatActivity {
         noteAdapter = new NoteAdapter(notes, new NoteAdapter.OnNoteClickListener() {
             @Override
             public void onNoteClick(Note note) {
-                // Open NoteDetailActivity when a note is clicked
                 Intent intent = new Intent(MainActivity.this, NoteDetailActivity.class);
+                intent.putExtra("id", String.valueOf(note.getId()));
                 intent.putExtra("title", note.getTitle());
+                intent.putExtra("subtitle", note.getSubtitle()); // Add this line
                 intent.putExtra("content", note.getContent());
                 startActivity(intent);
             }
@@ -81,9 +90,11 @@ public class MainActivity extends AppCompatActivity {
         Cursor cursor = databaseHelper.getAllEntries();
         if (cursor.moveToFirst()) {
             do {
+                int id = cursor.getInt(cursor.getColumnIndex("ID"));  // Get the ID
                 String title = cursor.getString(cursor.getColumnIndex("TITLE"));
+                String subtitle = cursor.getString(cursor.getColumnIndex("SUBTITLE"));
                 String content = cursor.getString(cursor.getColumnIndex("CONTENT"));
-                notes.add(new Note(title, content));
+                notes.add(new Note(id, title, subtitle,  content));  // Create Note with ID
             } while (cursor.moveToNext());
         }
         cursor.close();
@@ -94,21 +105,25 @@ public class MainActivity extends AppCompatActivity {
         List<Note> filteredNotes = new ArrayList<>();
         if (cursor != null && cursor.moveToFirst()) {
             do {
+                int idIndex = cursor.getColumnIndex("ID");
                 int titleIndex = cursor.getColumnIndex("TITLE");
+                int subtitleindex = cursor.getColumnIndex("SUBTITLE");
                 int contentIndex = cursor.getColumnIndex("CONTENT");
 
-                if (titleIndex != -1 && contentIndex != -1) {
+                if (idIndex != -1 && titleIndex != -1 && contentIndex != -1) {
+                    int id = cursor.getInt(idIndex);
                     String title = cursor.getString(titleIndex);
+                    String subtitle = cursor.getString(subtitleindex);
                     String content = cursor.getString(contentIndex);
 
                     if (title != null && content != null) {
-                        filteredNotes.add(new Note(title, content));
+                        filteredNotes.add(new Note(id, title, subtitle,  content));
                     }
                 }
             } while (cursor.moveToNext());
         }
         if (cursor != null) {
-            cursor.close(); // Always close the cursor when done
+            cursor.close();
         }
         return filteredNotes;
     }

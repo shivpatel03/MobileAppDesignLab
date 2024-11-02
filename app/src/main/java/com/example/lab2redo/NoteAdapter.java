@@ -37,6 +37,7 @@ public class NoteAdapter extends RecyclerView.Adapter<NoteAdapter.NoteViewHolder
         Note note = notes.get(position);
         holder.titleTextView.setText(note.getTitle());
         holder.contentTextView.setText(note.getContent());
+        holder.idTextView.setText("ID: " + note.getId());  // Display the ID
 
         // Handle item click
         holder.itemView.setOnClickListener(new View.OnClickListener() {
@@ -60,11 +61,13 @@ public class NoteAdapter extends RecyclerView.Adapter<NoteAdapter.NoteViewHolder
     public static class NoteViewHolder extends RecyclerView.ViewHolder {
         TextView titleTextView;
         TextView contentTextView;
+        TextView idTextView;  // Add this
 
         public NoteViewHolder(@NonNull View itemView) {
             super(itemView);
             titleTextView = itemView.findViewById(R.id.noteTitle);
             contentTextView = itemView.findViewById(R.id.noteContent);
+            idTextView = itemView.findViewById(R.id.noteId);  // Initialize the ID TextView
         }
     }
 }
