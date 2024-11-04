@@ -27,8 +27,7 @@ public class NoteAdapter extends RecyclerView.Adapter<NoteAdapter.NoteViewHolder
     @NonNull
     @Override
     public NoteViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(parent.getContext())
-                .inflate(R.layout.note_item, parent, false);
+        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.note_item, parent, false);
         return new NoteViewHolder(view);
     }
 
@@ -37,7 +36,10 @@ public class NoteAdapter extends RecyclerView.Adapter<NoteAdapter.NoteViewHolder
         Note note = notes.get(position);
         holder.titleTextView.setText(note.getTitle());
         holder.contentTextView.setText(note.getContent());
-        holder.idTextView.setText("ID: " + note.getId());  // Display the ID
+//        holder.idTextView.setText("ID: " + note.getId());  // Display the ID
+
+        // Set the background color of the noteColorView
+        holder.noteColorView.setBackgroundColor(note.getColor());
 
         // Handle item click
         holder.itemView.setOnClickListener(new View.OnClickListener() {
@@ -61,13 +63,14 @@ public class NoteAdapter extends RecyclerView.Adapter<NoteAdapter.NoteViewHolder
     public static class NoteViewHolder extends RecyclerView.ViewHolder {
         TextView titleTextView;
         TextView contentTextView;
-        TextView idTextView;  // Add this
+//        TextView idTextView;  // Declare the ID TextView
+        View noteColorView;   // Declare the Color View
 
         public NoteViewHolder(@NonNull View itemView) {
             super(itemView);
             titleTextView = itemView.findViewById(R.id.noteTitle);
             contentTextView = itemView.findViewById(R.id.noteContent);
-            idTextView = itemView.findViewById(R.id.noteId);  // Initialize the ID TextView
+            noteColorView = itemView.findViewById(R.id.noteColorView);  // Initialize the color view
         }
     }
 }
