@@ -31,6 +31,21 @@
         android:textSize="16sp"
         android:enabled="false"/>
 
+    <View
+        android:id="@+id/colorDisplay"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:layout_marginTop="16dp"
+        android:background="#FFFFFF" />
+
+
+    <Button
+        android:id="@+id/changeColorButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Change Color"
+        android:onClick="openColorPickerDialog"/>
+
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

@@ -17,14 +17,15 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     private static final String COL_2 = "TITLE";
     private static final String COL_3 = "SUBTITLE";
     private static final String COL_4 = "CONTENT";
+    private static final String COL_5 = "COLOR";
 
     public DatabaseHelper(@Nullable Context context) {
-        super(context, DATABASE_NAME, null, 1);
+        super(context, DATABASE_NAME, null,  2);
     }
 
     @Override
     public void onCreate(SQLiteDatabase db) {
-        db.execSQL("CREATE TABLE IF NOT EXISTS " + TABLE_NAME + "(ID INTEGER PRIMARY KEY AUTOINCREMENT, TITLE TEXT, SUBTITLE TEXT, CONTENT TEXT)");
+        db.execSQL("CREATE TABLE IF NOT EXISTS " + TABLE_NAME + "(ID INTEGER PRIMARY KEY AUTOINCREMENT, TITLE TEXT, SUBTITLE TEXT, CONTENT TEXT, COLOR INTEGER)");
 
     }
 
@@ -34,12 +35,13 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         onCreate(db);
     }
 
-    public boolean insertData(String noteTitle, String noteSubtitle, String noteBody) {
+    public boolean insertData(String noteTitle, String noteSubtitle, String noteBody, int color) {
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues values = new ContentValues();
         values.put(COL_2, noteTitle);
         values.put(COL_3, noteSubtitle);
         values.put(COL_4, noteBody);
+        values.put(COL_5, color);
 
         long var = db.insert(TABLE_NAME, null, values);
         if (var == -1) {
@@ -72,12 +74,13 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         return db.delete(TABLE_NAME, "ID=?", new String[]{id});
     }
 
-    public boolean updateNote(String id, String title, String subtitle, String content) {
+    public boolean updateNote(String id, String title, String subtitle, String content, int color) {
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues values = new ContentValues();
         values.put(COL_2, title);
         values.put(COL_3, subtitle);
         values.put(COL_4, content);
+        values.put(COL_5, color);
 
         int result = db.update(TABLE_NAME, values, "ID = ?", new String[] { id });
         return result > 0;

@@ -11,6 +11,8 @@ import android.widget.Toast;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
+import yuku.ambilwarna.AmbilWarnaDialog;
+
 public class NoteDetailActivity extends AppCompatActivity {
 
     private EditText titleEditText;
@@ -21,6 +23,10 @@ public class NoteDetailActivity extends AppCompatActivity {
     private Button deleteButton;
     private DatabaseHelper databaseHelper;
     private String noteId;
+    private int noteColor;
+    private Button changeColorButton;
+    private View colorDisplay;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -37,17 +43,25 @@ public class NoteDetailActivity extends AppCompatActivity {
         editButton = findViewById(R.id.editButton);
         saveButton = findViewById(R.id.saveButton);
         deleteButton = findViewById(R.id.deleteButton);
+        changeColorButton = findViewById(R.id.changeColorButton);
+        colorDisplay = findViewById(R.id.colorDisplay);
+
+
 
         // Get data from intent
         noteId = getIntent().getStringExtra("id");
         String title = getIntent().getStringExtra("title");
         String subtitle = getIntent().getStringExtra("subtitle");
         String content = getIntent().getStringExtra("content");
+        noteColor = getIntent().getIntExtra("color", 0xFFFFFF); // Default to white if no color
+
 
         // Set data to views
         titleEditText.setText(title);
         subtitleEditText.setText(subtitle);
         contentEditText.setText(content);
+        colorDisplay.setBackgroundColor(noteColor);
+
 
         // Initially disable editing
         setEditingEnabled(false);
@@ -81,6 +95,7 @@ public class NoteDetailActivity extends AppCompatActivity {
         contentEditText.setEnabled(enabled);
         editButton.setVisibility(enabled ? View.GONE : View.VISIBLE);
         saveButton.setVisibility(enabled ? View.VISIBLE : View.GONE);
+        changeColorButton.setVisibility(enabled ? View.VISIBLE : View.GONE);
     }
 
     private void saveChanges() {
@@ -93,7 +108,7 @@ public class NoteDetailActivity extends AppCompatActivity {
             return;
         }
 
-        boolean isUpdated = databaseHelper.updateNote(noteId, newTitle, newSubtitle, newContent);
+        boolean isUpdated = databaseHelper.updateNote(noteId, newTitle, newSubtitle, newContent, noteColor);
 
         if (isUpdated) {
             Toast.makeText(this, "Note updated successfully", Toast.LENGTH_SHORT).show();
@@ -126,5 +141,20 @@ public class NoteDetailActivity extends AppCompatActivity {
         } else {
             Toast.makeText(this, "Failed to delete note", Toast.LENGTH_SHORT).show();
         }
+    }
+
+    public void openColorPickerDialog(View view) {
+        AmbilWarnaDialog colorPickerDialog = new AmbilWarnaDialog(this, noteColor, new AmbilWarnaDialog.OnAmbilWarnaListener() {
+            @Override
+            public void onOk(AmbilWarnaDialog dialog, int color) {
+                noteColor = color;
+                colorDisplay.setBackgroundColor(noteColor);
+            }
+
+            @Override
+            public void onCancel(AmbilWarnaDialog dialog) {
+            }
+        });
+        colorPickerDialog.show();
     }
 }

@@ -32,7 +32,7 @@ android {
 }
 
 dependencies {
-
+    implementation(libs.yukuku.ambilwarna)
     implementation(libs.appcompat)
     implementation(libs.material)
     implementation(libs.activity)

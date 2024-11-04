@@ -1,5 +1,6 @@
 package com.example.lab2redo;
 
+import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.database.Cursor;
 import android.os.Bundle;
@@ -52,6 +53,7 @@ public class MainActivity extends AppCompatActivity {
                 intent.putExtra("title", note.getTitle());
                 intent.putExtra("subtitle", note.getSubtitle()); // Add this line
                 intent.putExtra("content", note.getContent());
+                intent.putExtra("color", note.getColor());
                 startActivity(intent);
             }
         });
@@ -85,6 +87,7 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
+    @SuppressLint("Range")
     private List<Note> getAllNotes() {
         List<Note> notes = new ArrayList<>();
         Cursor cursor = databaseHelper.getAllEntries();
@@ -94,7 +97,8 @@ public class MainActivity extends AppCompatActivity {
                 String title = cursor.getString(cursor.getColumnIndex("TITLE"));
                 String subtitle = cursor.getString(cursor.getColumnIndex("SUBTITLE"));
                 String content = cursor.getString(cursor.getColumnIndex("CONTENT"));
-                notes.add(new Note(id, title, subtitle,  content));  // Create Note with ID
+                int color = cursor.getInt(cursor.getColumnIndex("COLOR"));
+                notes.add(new Note(id, title, subtitle,  content, color));  // Create Note with ID
             } while (cursor.moveToNext());
         }
         cursor.close();
@@ -109,15 +113,17 @@ public class MainActivity extends AppCompatActivity {
                 int titleIndex = cursor.getColumnIndex("TITLE");
                 int subtitleindex = cursor.getColumnIndex("SUBTITLE");
                 int contentIndex = cursor.getColumnIndex("CONTENT");
+                int colorIndex = cursor.getColumnIndex("COLOR");
 
                 if (idIndex != -1 && titleIndex != -1 && contentIndex != -1) {
                     int id = cursor.getInt(idIndex);
                     String title = cursor.getString(titleIndex);
                     String subtitle = cursor.getString(subtitleindex);
                     String content = cursor.getString(contentIndex);
+                    int color = cursor.getInt(colorIndex);
 
                     if (title != null && content != null) {
-                        filteredNotes.add(new Note(id, title, subtitle,  content));
+                        filteredNotes.add(new Note(id, title, subtitle,  content, color));
                     }
                 }
             } while (cursor.moveToNext());
